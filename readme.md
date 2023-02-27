@@ -15,8 +15,8 @@ This API controls the entire UTS parking system.
 1. Clone this repository on your local machine: git clone https://github.com/nicopicon98/parking_uts_apirest.git
 2. Install Maven if you haven't already. You can download it from https://maven.apache.org/download.cgi
 3. Open a terminal or command prompt and navigate to the project's root directory.
-4. Run the following command to build the project: mvn clean install
-5. After the build is successful, run the following command to start the application:
+4. Run the following command to build the project: mvn package
+5. After the build is successful, run the following command to start the application: java -jar target/my-app.jar (my-app.jar file generated on previous step)
 6. The application should now be running and can be accessed via the following URL: http://localhost:8080
 
 
