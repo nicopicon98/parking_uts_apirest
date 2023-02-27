@@ -35,7 +35,7 @@ public class VehicleServiceImpl implements IVehicleService {
 		try {
 			List<Vehicle> vehicleResponses = vehicleRepository.findAllByState(0); // fetch the query response
 			response = new VehicleResponseRest(vehicleResponses); // adapter
-			response.setMetadata("ok", "00", "Exito");
+			response.setMetadata("ok", "00", "Success");
 			return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			// handle any exceptions that may occur during the vehicle retrieval process
@@ -96,22 +96,26 @@ public class VehicleServiceImpl implements IVehicleService {
 				response.setMetadata("nok", "-1", "No se encontró ningún vehículo con el ID proporcionado");
 				return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.NOT_FOUND);
 			}
+			
+			if(vehicleOptional.get().getState() != 0) {
+				// If a matching vehicle is found, but state is != 0 then there is a mismatch
+				response = new VehicleResponseRest();
+				response.setMetadata("nok", "-2", "El vehiculo que intentas marcar estado a SALIDA no se encuentra en el parqueadero");
+				return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.NOT_FOUND);
+			}
 
 			// If a matching vehicle is found, update the checkOut timestamp and state of
 			// the vehicle
 			Vehicle vehicle = vehicleOptional.get();
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			LocalDateTime localDateTime = timestamp.toLocalDateTime();
-			vehicle.setCheckOut(localDateTime); // set the checkOut timestamp to the current
-												// time
+			vehicle.setCheckOut(localDateTime); // set the checkOut timestamp to the current time
 			vehicle.setState(1); // set the state to 1 (unavailable)
 			vehicleRepository.save(vehicle); // save the updated vehicle to the database
-
 			vehicleResponseRest.add(vehicle);
 			// create a response object with the updated vehicle data
-			response = new VehicleResponseRest(vehicleResponseRest, "all"); // we access a different constructor to map
-																			// differently, this time with checkOut
-			response.setMetadata("ok", "00", "Vehículo actualizado exitosamente");
+			response = new VehicleResponseRest(vehicleResponseRest, "all"); // we access a different constructor to map								// differently, this time with checkOut
+			response.setMetadata("ok", "00", "Vehículo marcado a estado SALIDA exitosamente");
 			return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			// handle any exceptions that may occur during the vehicle update process
@@ -152,7 +156,7 @@ public class VehicleServiceImpl implements IVehicleService {
 			// create a response object with the saved vehicle data
 			vehicleResponseRest.add(savedVehicle);
 			response = new VehicleResponseRest(vehicleResponseRest);
-
+			response.setMetadata("ok", "00", "Vehiculo ingresado con exito");
 			return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			// handle any exceptions that may occur during the Vehicle entity insertion
