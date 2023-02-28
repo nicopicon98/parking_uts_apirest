@@ -36,7 +36,7 @@ public class VehicleServiceImpl implements IVehicleService {
 			List<Vehicle> vehicleResponses = vehicleRepository.findAllByState(0); // fetch the query response
 			response = new VehicleResponseRest(vehicleResponses); // adapter
 			response.setMetadata("ok", "00", "Success");
-			return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<VehicleResponseRest>(response, HttpStatus.OK);
 		} catch (Exception e) {
 			// handle any exceptions that may occur during the vehicle retrieval process
 			response = new VehicleResponseRest();
